@@ -1,0 +1,538 @@
+{
+	"info": {
+		"_postman_id": "77e14234-dfa4-470f-af35-078f67d4dcfe",
+		"name": "UPBOnlineApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11726810",
+		"_collection_link": "https://orange-rocket-735542.postman.co/workspace/My-Workspace~9ee5851b-a8ac-4ba9-89e3-d79dc65d065c/collection/11726810-77e14234-dfa4-470f-af35-078f67d4dcfe?action=share&source=collection_link&creator=11726810"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "UpbReg%43@09_1",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "UPB_Reg",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Method",
+						"value": "Reg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \r\n  \"name\": \"Praveen Kumar\",\r\n  \"email\": \"pk64756@gmail.com\",\r\n  \"mobile\": \"9876543210\",\r\n  \"country\": \"India\",\r\n  \"refCode\": \"UPB1I1WwB81\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.upbonline.com/api/Registration/Registration",
+					"protocol": "https",
+					"host": [
+						"api",
+						"upbonline",
+						"com"
+					],
+					"path": [
+						"api",
+						"Registration",
+						"Registration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "Upblogin%43@09",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "UPB_Login",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Method",
+						"value": "Login",
+						"type": "text"
+					},
+					{
+						"key": "Email",
+						"value": "UPB1W0ZRT22",
+						"type": "text"
+					},
+					{
+						"key": "Password",
+						"value": "Devil@123",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.upbonline.com/api/Login/GetLogin",
+					"protocol": "https",
+					"host": [
+						"api",
+						"upbonline",
+						"com"
+					],
+					"path": [
+						"api",
+						"Login",
+						"GetLogin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateTokenByUserId",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "UserId",
+						"value": "22",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.upbonline.com/api/Generic/CreateTokenByUserId?Method=GetBYid",
+					"protocol": "https",
+					"host": [
+						"api",
+						"upbonline",
+						"com"
+					],
+					"path": [
+						"api",
+						"Generic",
+						"CreateTokenByUserId"
+					],
+					"query": [
+						{
+							"key": "Method",
+							"value": "GetBYid"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetById",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "Upblogin%43@09_2",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "UPB_GetBuId",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "UserId",
+						"value": "22",
+						"type": "text"
+					},
+					{
+						"key": "Method",
+						"value": "GetById",
+						"type": "text"
+					},
+					{
+						"key": "Token",
+						"value": "USZqa2UjejY=",
+						"type": "text"
+					},
+					{
+						"key": "DeviceType",
+						"value": "Mobile",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5172/api/User/GETBYID",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5172",
+					"path": [
+						"api",
+						"User",
+						"GETBYID"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GetById",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "UserId",
+								"value": "22",
+								"type": "text"
+							},
+							{
+								"key": "Method",
+								"value": "GetById",
+								"type": "text"
+							},
+							{
+								"key": "Token",
+								"value": "aXBzJGtPZj=",
+								"type": "text"
+							},
+							{
+								"key": "DeviceType",
+								"value": "Mobile",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.upbonline.com/api/User/GETBYID",
+							"protocol": "https",
+							"host": [
+								"api",
+								"upbonline",
+								"com"
+							],
+							"path": [
+								"api",
+								"User",
+								"GETBYID"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 20 Dec 2024 05:51:40 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/problem+json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						},
+						{
+							"key": "X-Powered-By-Plesk",
+							"value": "PleskWin"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Report-To",
+							"value": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=pkwAofGXeHY1NBT%2FTQO%2B%2B4alYrEWf8dWhfxDg37Wm7DHBZiB0JjYHxtsKJSqTb%2Fwd06W4%2B9PKEDBQIElGlIPwGmUoQ8rHeb6WDCgjKkECFKAmT%2Bjm008c4oec8Cds9x6PGwfkA%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}"
+						},
+						{
+							"key": "NEL",
+							"value": "{\"success_fraction\":0,\"report_to\":\"cf-nel\",\"max_age\":604800}"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "8f4d5ca7aa9be28e-MRS"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						},
+						{
+							"key": "server-timing",
+							"value": "cfL4;desc=\"?proto=TCP&rtt=256062&min_rtt=255817&rtt_var=72325&sent=14&recv=13&lost=0&retrans=0&sent_bytes=4332&recv_bytes=1123&delivery_rate=16535&cwnd=254&unsent_bytes=0&cid=3e1940fc2d389757&ts=9344&x=0\""
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"type\": \"https://tools.ietf.org/html/rfc7235#section-3.1\",\n    \"title\": \"Unauthorized\",\n    \"status\": 401,\n    \"traceId\": \"00-c38a29f9c59bca6073286eb32f7cd662-841bb2409cb8e0be-00\"\n}"
+				}
+			]
+		},
+		{
+			"name": "GetById Copy",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "Upblogin%43@09_2",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "UPB_GetBuId",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "UserId",
+						"value": "22",
+						"type": "text"
+					},
+					{
+						"key": "Method",
+						"value": "GetById",
+						"type": "text"
+					},
+					{
+						"key": "Token",
+						"value": "USZqa2UjejY=",
+						"type": "text"
+					},
+					{
+						"key": "DeviceType",
+						"value": "Mobile",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5172/api/User/GETBYID",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5172",
+					"path": [
+						"api",
+						"User",
+						"GETBYID"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "GetById",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "UserId",
+								"value": "22",
+								"type": "text"
+							},
+							{
+								"key": "Method",
+								"value": "GetById",
+								"type": "text"
+							},
+							{
+								"key": "Token",
+								"value": "aXBzJGtPZj=",
+								"type": "text"
+							},
+							{
+								"key": "DeviceType",
+								"value": "Mobile",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.upbonline.com/api/User/GETBYID",
+							"protocol": "https",
+							"host": [
+								"api",
+								"upbonline",
+								"com"
+							],
+							"path": [
+								"api",
+								"User",
+								"GETBYID"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 20 Dec 2024 05:51:40 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/problem+json; charset=utf-8"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "ASP.NET"
+						},
+						{
+							"key": "X-Powered-By-Plesk",
+							"value": "PleskWin"
+						},
+						{
+							"key": "cf-cache-status",
+							"value": "DYNAMIC"
+						},
+						{
+							"key": "Report-To",
+							"value": "{\"endpoints\":[{\"url\":\"https:\\/\\/a.nel.cloudflare.com\\/report\\/v4?s=pkwAofGXeHY1NBT%2FTQO%2B%2B4alYrEWf8dWhfxDg37Wm7DHBZiB0JjYHxtsKJSqTb%2Fwd06W4%2B9PKEDBQIElGlIPwGmUoQ8rHeb6WDCgjKkECFKAmT%2Bjm008c4oec8Cds9x6PGwfkA%3D%3D\"}],\"group\":\"cf-nel\",\"max_age\":604800}"
+						},
+						{
+							"key": "NEL",
+							"value": "{\"success_fraction\":0,\"report_to\":\"cf-nel\",\"max_age\":604800}"
+						},
+						{
+							"key": "Server",
+							"value": "cloudflare"
+						},
+						{
+							"key": "CF-RAY",
+							"value": "8f4d5ca7aa9be28e-MRS"
+						},
+						{
+							"key": "alt-svc",
+							"value": "h3=\":443\"; ma=86400"
+						},
+						{
+							"key": "server-timing",
+							"value": "cfL4;desc=\"?proto=TCP&rtt=256062&min_rtt=255817&rtt_var=72325&sent=14&recv=13&lost=0&retrans=0&sent_bytes=4332&recv_bytes=1123&delivery_rate=16535&cwnd=254&unsent_bytes=0&cid=3e1940fc2d389757&ts=9344&x=0\""
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"type\": \"https://tools.ietf.org/html/rfc7235#section-3.1\",\n    \"title\": \"Unauthorized\",\n    \"status\": 401,\n    \"traceId\": \"00-c38a29f9c59bca6073286eb32f7cd662-841bb2409cb8e0be-00\"\n}"
+				}
+			]
+		},
+		{
+			"name": "GetById Copy",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "Upblogin%43@09_2",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "UPB_GetBuId",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "UserId",
+						"value": "22",
+						"type": "text"
+					},
+					{
+						"key": "Method",
+						"value": "GetById",
+						"type": "text"
+					},
+					{
+						"key": "Token",
+						"value": "USZqa2UjejY=",
+						"type": "text"
+					},
+					{
+						"key": "DeviceType",
+						"value": "Mobile",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountNo\" : \"asdjcbui\",\r\n    \"blovk\" : \"38925y83t9fn\",\r\n    \"reward\" : \"5\",\r\n    \"dateTime\" : \"20/2/2024\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.upbonline.com/api/User/CreateAppMining",
+					"protocol": "https",
+					"host": [
+						"api",
+						"upbonline",
+						"com"
+					],
+					"path": [
+						"api",
+						"User",
+						"CreateAppMining"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
