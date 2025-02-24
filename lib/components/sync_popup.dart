@@ -9,11 +9,11 @@ class SyncPopup extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      title: Row(
+      title: const Row(
         children: [
-          const Icon(Icons.sync, color: Colors.blue),
-          const SizedBox(width: 10),
-          const Text("Sync Your Coins"),
+           Icon(Icons.sync, color: Colors.blue),
+           SizedBox(width: 10),
+           Text("Sync Your Coins"),
         ],
       ),
       content: const Text(

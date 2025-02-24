@@ -1,81 +1,71 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:upbmining/components/sync_popup.dart';
-import 'package:provider/provider.dart';
-import 'package:upbmining/Controller/coin_controller.dart';
-import 'package:upbmining/components/drawer.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
+class CountryPhoneField extends StatefulWidget {
   @override
-  State<HomePage> createState() => _HomePageState();
+  _CountryPhoneFieldState createState() => _CountryPhoneFieldState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+class _CountryPhoneFieldState extends State<CountryPhoneField> {
+  final TextEditingController _mobileController = TextEditingController();
+  CountryCode _selectedCountry =
+      CountryCode.fromCountryCode('IN'); // Default India 🇮🇳
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      checkAndShowPopup();
-    });
-  }
-
-  /// Function to check if popup has already been shown today
-  Future<void> checkAndShowPopup() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    
-    // Get the last shown date
-    String? lastShownDate = prefs.getString('last_popup_date');
-    String todayDate =
-        DateTime.now().toIso8601String().split('T')[0]; // YYYY-MM-DD format
-
-    if (lastShownDate != todayDate) {
-      // Show the popup since it's a new day
-      Future.delayed(Duration.zero, () {
-        showDialog(
-          context: context,
-          barrierDismissible: false, // Prevents dismissing by tapping outside
-          builder: (context) => const SyncPopup(),
-        );
-      });
-
-      // Save the new date
-      await prefs.setString('last_popup_date', todayDate);
-    }
+  bool _isValidMobile(String value) {
+    return RegExp(r'^[0-9]{10}$').hasMatch(value);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CoinController>(builder: (context, coin, _) {
-      return Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.menu, color: Colors.black),
-            onPressed: () {
-              _scaffoldKey.currentState?.openDrawer();
+    return Row(
+      children: [
+        CountryCodePicker(
+          onChanged: (country) {
+            setState(() {
+              _selectedCountry = country;
+            });
+            debugPrint(
+                "Selected Country: ${country.name}, Code: ${country.dialCode}");
+          },
+          initialSelection: 'IN', // Default country
+          showCountryOnly: false,
+          showOnlyCountryWhenClosed: false,
+          showFlag: true,
+          alignLeft: false,
+        ),
+        const SizedBox(width: 5), // Space between country picker and text field
+        Expanded(
+          child: TextFormField(
+            controller: _mobileController,
+            decoration: InputDecoration(
+              labelText: "Mobile Number",
+              border: const OutlineInputBorder(),
+              prefixIcon: _selectedCountry.flagUri != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Image.asset(
+                        _selectedCountry.flagUri!,
+                        package:
+                            'country_code_picker', // Required for package assets
+                        width: 24,
+                        height: 24,
+                      ),
+                    )
+                  : const Icon(Icons.phone), // Fallback icon if flag is missing
+            ),
+            keyboardType: TextInputType.phone,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Mobile number is required";
+              }
+              if (!_isValidMobile(value)) {
+                return "Enter a valid 10-digit mobile number";
+              }
+              return null;
             },
           ),
-          backgroundColor: Colors.white,
         ),
-        drawer: const CustomDrawer(),
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                barrierColor: Colors.black.withOpacity(0.5), // Semi-transparent background
-                builder: (context) => const SyncPopup(),
-              );
-            },
-            child: const Text("Sync"),
-          ),
-        ),
-      );
-    });
+      ],
+    );
   }
 }

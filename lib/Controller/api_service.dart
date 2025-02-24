@@ -1,21 +1,19 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:hive/hive.dart'; // For Hive database
-import 'package:crypto/crypto.dart'; // For encryption (SHA-256)
+import 'package:hive/hive.dart';
+import 'package:upbmining/Controller/security.dart';
+import 'package:upbmining/Model/util_class.dart';
 import 'package:upbmining/hive/boxes.dart';
-import 'dart:typed_data';
-
 import '../Model/login_model.dart';
-import '../Model/app_mining.dart'; // Assuming your AppMining model is here
+import '../Model/app_mining.dart';
 
 class ApiService {
-  // Base URL for the API
   static const String baseUrl = "https://api.upbonline.com/api";
 
-  // Method to perform the login API call
+  /// **🔹 Login API**
   Future<LoginResponse?> login(String email, String password) async {
-    final String endpoint = "/Login/GetLogin"; // Separate endpoint
+    final String endpoint = "/Login/GetLogin";
 
     final headers = {
       'Method': 'Login',
@@ -27,7 +25,7 @@ class ApiService {
 
     try {
       final response = await http.post(
-        Uri.parse(baseUrl + endpoint), // Combine baseUrl and endpoint
+        Uri.parse(baseUrl + endpoint),
         headers: headers,
       );
 
@@ -35,38 +33,69 @@ class ApiService {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return LoginResponse.fromJson(data);
       } else {
+        debugPrint("❌ Login failed Api: ${response.body}");
         return null;
       }
     } catch (e) {
-      debugPrint("Error: $e");
+      debugPrint("🚨 Login error: $e");
       return null;
     }
   }
 
-  // Function to get token by UserId
+  /// **🔹 Fetch Token by UserId**
   Future<String?> getTokenByUserId(String userId) async {
-    final url = Uri.parse(
-        "https://api.upbonline.com/api/Generic/CreateTokenByUserId?Method=GetBYid");
+    final url =
+        Uri.parse("$baseUrl/Generic/CreateTokenByUserId?Method=GetById");
 
     try {
-      final response = await http.get(
-        url,
-        headers: {"UserId": userId}, // Sending UserId in headers
-      );
+      final response = await http.get(url, headers: {"UserId": userId});
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return data['token']; // Adjust based on API response structure
+        return data['token']; // Adjust according to API response structure
       } else {
-        print("Failed to fetch token: ${response.statusCode}");
+        debugPrint("❌ Failed to fetch token: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error fetching token: $e");
+      debugPrint("🚨 Error fetching token: $e");
     }
     return null;
   }
 
-  // Method to fetch data from Hive and send it to the API
+// fetch by id
+
+  // Future<void> fetchUserById({
+  //   required String userId,
+  //   required String method,
+  //   required String token,
+  // }) async {
+  //   const String url = "https://api.upbonline.com/api/User/GETBYID";
+  //   String auth =
+  //       "Basic ${base64Encode(utf8.encode("UPB_GetBuId:Upblogin%43@09_2"))}";
+
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse(url),
+  //       headers: {
+  //         'Authorization': auth,
+  //         "userid": userId,
+  //         "method": method,
+  //         "token": token,
+  //         "DeviceType": "Mobile",
+  //       },
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //       print("User Data api: $data");
+  //     } else {
+  //       print("Error: ${response.statusCode} - ${response.body}");
+  //     }
+  //   } catch (e) {
+  //     print("Exception: $e");
+  //   }
+  // }
+
   Future<int> sendDataToApi(BuildContext context) async {
     try {
       List<AppMining> appMiningList = [];
@@ -82,71 +111,84 @@ class ApiService {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text("No data to sync")));
         }
-        return 204; // No data to sync (HTTP 204 No Content)
+        return 204; // No Content
       }
 
       // Convert the list to JSON format
       String appMiningListJson = jsonEncode(appMiningList);
+      debugPrint("📌 AppMining List JSON: $appMiningListJson");
 
       // Encrypt the data
-      String encryptedData = _encryptData(appMiningListJson);
+      String encryptedData = AesEncryptionHelper.encryptData(appMiningListJson);
+      print("🔐 Encrypted Data: $encryptedData");
 
-      // Prepare the API request
+      if (encryptedData.isEmpty) {
+        debugPrint("❌ Encryption failed.");
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Encryption failed.")));
+        }
+        return 400;
+      }
+
+      // Fetch the token dynamically
+      String userId = 'UPB1W0ZRT22'; // Update with actual user ID logic
+      String? token = await getTokenByUserId(userId);
+
+      if (token == null) {
+        debugPrint("❌ Failed to fetch token. Aborting request.");
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Token fetch failed.")));
+        }
+        return 401; // Unauthorized
+      }
+
+      // Prepare API request
       String auth =
           "Basic ${base64Encode(utf8.encode("UPB_GetBuId:Upblogin%43@09_2"))}";
       Uri apiUrl = Uri.parse('$baseUrl/User/CreateAppMining');
 
-      // Send the data to the API
       final response = await http.post(
         apiUrl,
         headers: {
           'Authorization': auth,
           'Content-Type': 'application/json',
-          'UserId': 'UPB1W0ZRT22',
+          'UserId': userId,
           'Method': 'GetById',
-          'Token': 'bXl4eEZDczQ=',
+          'Token': token,
           'DeviceType': 'Mobile',
         },
-        body: jsonEncode({'encryptedData': encryptedData}),
+        body: jsonEncode({
+          "encryptedData": encryptedData,
+        }),
       );
 
-      if (response.statusCode == 200) {
-        debugPrint(encryptedData);
+      debugPrint("📌 API Response Status Code: ${response.statusCode}");
+      debugPrint("📌 API Response Body: ${response.body}");
 
+      if (response.statusCode == 200) {
+        debugPrint("✅ Data sent successfully.");
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Data synced successfully")),
-          );
+              const SnackBar(content: Text("Data synced successfully")));
         }
-
-        // Optionally, clear Hive data after successful sync
         await userInfo.clear();
       } else {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Failed to send data")));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("❌ Failed to send data: ${response.body}")));
         }
       }
 
-      return response.statusCode; // Return the status code
+      return response.statusCode;
     } catch (e) {
+      debugPrint("🚨 Error sending data: $e");
       if (context.mounted) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("An error occurred: $e")));
+            .showSnackBar(SnackBar(content: Text("❌ An error occurred: $e")));
       }
-      return 500; // Return HTTP 500 Internal Server Error
+      return 500;
     }
-  }
-
-  // Helper function to encrypt data (SHA-256)
-  String _encryptData(String data) {
-    // Convert the string data to bytes
-    List<int> bytes = utf8.encode(data);
-
-    // Apply SHA-256 hash
-    var digest = sha256.convert(bytes);
-    // debugPrint("bbfuduhgh ${digest.toString()}");
-    // Return the hexadecimal string representation of the hash
-    return digest.toString();
   }
 }

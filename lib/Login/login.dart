@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:upbmining/Controller/api_service.dart';
 import 'package:upbmining/Controller/login_controller.dart';
 import 'package:upbmining/Home/Homepage.dart';
 import 'package:upbmining/Login/Register.dart';
+import 'package:upbmining/Login/forgotpass.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,46 +19,65 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController accountNo = TextEditingController();
   TextEditingController password = TextEditingController();
 
+  /// **Save login session in SharedPreferences**
+  Future<void> saveLoginSession(String userId, String token) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("isLoggedIn", true);
+    await prefs.setString("userId", userId);
+    await prefs.setString("token", token);
+
+    debugPrint("Saved UserId: ${prefs.getString("userId")}");
+    debugPrint("Saved Token: ${prefs.getString("token")}");
+  }
+
+  /// **Handle login button click**
   void handleLogin() async {
     final apiService = ApiService();
-
-    // Call the login API
     final response = await apiService.login(accountNo.text, password.text);
 
     if (response != null && response.userId != null) {
       debugPrint("Login Successful: ${response.message}");
 
-      // Fetch the token using UserId
       String? token =
           await apiService.getTokenByUserId(response.userId.toString());
 
       if (token != null) {
         debugPrint("Token Retrieved: $token");
 
-        // Navigate to Home Page after successfully fetching token
-        Navigator.push(
+        // Save session in SharedPreferences
+        await saveLoginSession(response.userId.toString(), token);
+
+        // Use AuthProvider to update state
+        Provider.of<LoginController>(context, listen: false)
+            .saveLoginSession(response.userId.toString(), token);
+
+        // Navigate to Home Page
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
       } else {
         debugPrint("Failed to fetch token");
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Failed to retrieve token")),
-        );
+        showSnackBar("Failed to retrieve token");
       }
     } else {
       debugPrint("Login Failed");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login Failed")),
-      );
+      showSnackBar("Login Failed");
     }
+  }
+
+  /// **Show error messages**
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LoginController>(builder: (context, login, _) {
       return Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         body: Stack(
           children: [
             Center(
@@ -128,9 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () {
-                        handleLogin();
-                      },
+                      onPressed: handleLogin,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         padding: const EdgeInsets.symmetric(
@@ -147,12 +166,25 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 10),
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => const RegisterPage(),
-                        ));
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                            builder: (context) => const RegisterPage(),
+                          ),
+                        );
                       },
                       child: const Text(
                         "Don't have an account? Sign Up",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const ForgotPasswordPage(),
+                        ));
+                      },
+                      child: const Text(
+                        "Forgot Password?",
                         style: TextStyle(color: Colors.black),
                       ),
                     ),

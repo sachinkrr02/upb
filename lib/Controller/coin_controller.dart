@@ -70,27 +70,29 @@ class CoinController extends ChangeNotifier {
     notifyListeners();
   }
 
-
   // sync remainder
   Future<void> checkAndShowPopup(BuildContext context) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  // Get the last shown date
-  String? lastShownDate = prefs.getString('last_popup_date');
-  String todayDate = DateTime.now().toString().split(' ')[0]; // Get YYYY-MM-DD
+    // Get the last shown date
+    String? lastShownDate = prefs.getString('last_popup_date');
+    String todayDate =
+        DateTime.now().toString().split(' ')[0]; // Get YYYY-MM-DD
 
-  if (lastShownDate != todayDate) {
-    // Show the popup since it's a new day
-    Future.delayed(Duration.zero, () {
-      showDialog(
-        context: context,
-        builder: (context) => const SyncPopup(),
-      );
-    });
+    if (lastShownDate != todayDate) {
+      // Show the popup since it's a new day
+      Future.delayed(Duration.zero, () {
+        showDialog(
+          context: context,
+          builder: (context) => const SyncPopup(),
+        );
+      });
 
-    // Save the new date
-    await prefs.setString('last_popup_date', todayDate);
+      // Save the new date
+      await prefs.setString('last_popup_date', todayDate);
+    }
   }
-}
+  //
 
+  
 }

@@ -1,0 +1,14 @@
+[
+    {
+      "relation": [
+        "delegate_permission/common.handle_all_urls"
+      ],
+      "target": {
+      "namespace": "android_app",
+      "package_name": "com.example.upbmining",
+      "sha256_cert_fingerprints": [
+          "CD:52:C6:CD:61:26:0E:AA:03:E2:73:6B:2F:62:66:E0:95:C5:25:FA:30:49:2E:CD:F8:77:D1:E6:BE:EC:78:2F"    
+        ]
+      }
+    }
+  ]

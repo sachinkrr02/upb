@@ -4,49 +4,42 @@ part 'user_info.g.dart';
 
 @HiveType(typeId: 0)
 class UserInfo extends HiveObject {
-  UserInfo({
-    this.id,
-    this.account_no,
-    this.reward,
-    this.generated_code,
-    this.date_time,
-  });
-
   @HiveField(0)
-  final String? id;
+  int id; // Add ID field
 
   @HiveField(1)
-  final String? account_no;
+  String accountNo;
 
   @HiveField(2)
-  final String? reward;
+  int reward;
 
   @HiveField(3)
-  final String? generated_code;
+  String blovk;
 
   @HiveField(4)
-  final DateTime? date_time;
+  String dateTime;
 
-  // Convert UserInfo object to Map<String, dynamic>
-  Map<String, dynamic> toJson() {
+  @HiveField(5)
+  int isSynced;
+
+  UserInfo({
+    required this.id, // Include in constructor
+    required this.accountNo,
+    required this.reward,
+    required this.blovk,
+    required this.dateTime,
+    required this.isSynced,
+  });
+
+  // Convert object to map
+  Map<String, dynamic> toMap() {
     return {
-      "id": id,
-      "account_no": account_no,
+      "id": id, // Include ID in the map
+      "accountNo": accountNo,
       "reward": reward,
-      "generated_code": generated_code,
-      "date_time": date_time?.toIso8601String(),
+      "blovk": blovk,
+      "dateTime": dateTime,
+      "isSynced": isSynced,
     };
-  }
-
-  // Create a UserInfo object from a Map<String, dynamic>
-  factory UserInfo.fromJson(Map<String, dynamic> json) {
-    return UserInfo(
-      id: json["id"],
-      account_no: json["account_no"],
-      reward: json["reward"],
-      generated_code: json["generated_code"],
-      date_time:
-          json["date_time"] != null ? DateTime.parse(json["date_time"]) : null,
-    );
   }
 }
